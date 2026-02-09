@@ -2,228 +2,413 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>第16课 背单词版</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>俄语第16课 · 智能背词版</title>
 <style>
     body {
         font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         background: #f4f6f8;
-        padding: 30px;
+        padding: 20px;
         color: #222;
+        max-width: 800px;
+        margin: 0 auto;
     }
     h1 {
         text-align: center;
         color: #2c3e50;
     }
+    /* 控制按钮样式 */
+    .controls {
+        text-align: center;
+        margin-bottom: 20px;
+        position: sticky;
+        top: 10px;
+        z-index: 100;
+    }
+    button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button:hover { background: #2980b9; }
+    button.secondary { background: #95a5a6; }
+
+    .word-container {
+        display: flex;
+        flex-direction: column;
+    }
     .word {
         background: white;
-        margin: 10px auto;
-        padding: 14px 18px;
-        max-width: 600px;
+        margin: 8px auto;
+        padding: 16px;
+        width: 100%;
+        box-sizing: border-box;
         border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s;
+    }
+    .word:active { transform: scale(0.98); }
+    
+    .left-part {
+        flex: 1;
         cursor: pointer;
     }
     .ru {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
-        color: #34495e;
+        color: #2c3e50;
     }
     .cn {
         margin-top: 8px;
         display: none;
         color: #27ae60;
-        font-size: 16px;
+        font-size: 17px;
+        font-weight: 500;
+    }
+    .audio-btn {
+        background: #f0f0f0;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: 15px;
+        font-size: 18px;
     }
     .tip {
-        max-width: 600px;
-        margin: 20px auto;
+        margin: 15px auto;
         background: #fffbe6;
-        padding: 12px 16px;
+        padding: 12px;
         border-left: 6px solid #f1c40f;
         font-size: 14px;
+        border-radius: 4px;
     }
 </style>
-
-<script>
-function toggle(el) {
-    const cn = el.querySelector('.cn');
-    cn.style.display = cn.style.display === 'none' ? 'block' : 'none';
-}
-</script>
 </head>
-
 <body>
 
-<h1>第16课 · 背单词版</h1>
+<h1>第16课 · 俄语背单词</h1>
 
 <div class="tip">
-👉 点击每个单词显示/隐藏中文，先想意思再点，效果最好。
+💡 技巧：点击左侧单词显示翻译，点击右侧 🔊 听发音。
 </div>
 
-<div class="word" onclick="toggle(this)">
-    <div class="ru">утро</div>
-    <div class="cn">早晨</div>
+<div class="controls">
+    <button onclick="shuffleWords()">🔀 乱序排列</button>
+    <button class="secondary" onclick="toggleAll(true)">👁️ 全部显示</button>
+    <button class="secondary" onclick="toggleAll(false)">🙈 全部隐藏</button>
 </div>
 
-<div class="word" onclick="toggle(this)">
-    <div class="ru">часы</div>
-    <div class="cn">钟；小时</div>
+<div id="wordList" class="word-container">
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">утро</div>
+            <div class="cn">早晨</div>
+        </div>
+        <div class="audio-btn" onclick="speak('утро')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">часы</div>
+            <div class="cn">钟；小时</div>
+        </div>
+        <div class="audio-btn" onclick="speak('часы')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">проверять</div>
+            <div class="cn">检查（未完成体）</div>
+        </div>
+        <div class="audio-btn" onclick="speak('проверять')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">проверить</div>
+            <div class="cn">检查（完成体）</div>
+        </div>
+        <div class="audio-btn" onclick="speak('проверить')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">точно</div>
+            <div class="cn">准确地；准时</div>
+        </div>
+        <div class="audio-btn" onclick="speak('точно')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">нужно</div>
+            <div class="cn">需要；必须</div>
+        </div>
+        <div class="audio-btn" onclick="speak('нужно')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">здоров ≠ болен</div>
+            <div class="cn">健康的 ≠ 生病的</div>
+        </div>
+        <div class="audio-btn" onclick="speak('здоров болен')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">входить ≠ выходить</div>
+            <div class="cn">进入 ≠ 出去</div>
+        </div>
+        <div class="audio-btn" onclick="speak('входить выходить')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">впереди ≠ сзади</div>
+            <div class="cn">前面 ≠ 后面</div>
+        </div>
+        <div class="audio-btn" onclick="speak('впереди сзади')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">кончаться ≠ начинаться</div>
+            <div class="cn">结束 ≠ 开始</div>
+        </div>
+        <div class="audio-btn" onclick="speak('кончаться начинаться')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">спешить</div>
+            <div class="cn">着急；赶时间</div>
+        </div>
+        <div class="audio-btn" onclick="speak('спешить')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">остановка</div>
+            <div class="cn">车站；站点</div>
+        </div>
+        <div class="audio-btn" onclick="speak('остановка')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">работа</div>
+            <div class="cn">工作</div>
+        </div>
+        <div class="audio-btn" onclick="speak('работа')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">рабочий</div>
+            <div class="cn">工作的；工人</div>
+        </div>
+        <div class="audio-btn" onclick="speak('рабочий')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">осень</div>
+            <div class="cn">秋天</div>
+        </div>
+        <div class="audio-btn" onclick="speak('осень')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">осенью</div>
+            <div class="cn">在秋天</div>
+        </div>
+        <div class="audio-btn" onclick="speak('осенью')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">осенний</div>
+            <div class="cn">秋天的</div>
+        </div>
+        <div class="audio-btn" onclick="speak('осенний')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">день</div>
+            <div class="cn">白天；一天</div>
+        </div>
+        <div class="audio-btn" onclick="speak('день')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">дождь</div>
+            <div class="cn">雨</div>
+        </div>
+        <div class="audio-btn" onclick="speak('дождь')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">солнце</div>
+            <div class="cn">太阳</div>
+        </div>
+        <div class="audio-btn" onclick="speak('солнце')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">может быть</div>
+            <div class="cn">可能；也许</div>
+        </div>
+        <div class="audio-btn" onclick="speak('может быть')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">напротив</div>
+            <div class="cn">在……对面</div>
+        </div>
+        <div class="audio-btn" onclick="speak('напротив')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">светить</div>
+            <div class="cn">照耀；发光</div>
+        </div>
+        <div class="audio-btn" onclick="speak('светить')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">небо</div>
+            <div class="cn">天空</div>
+        </div>
+        <div class="audio-btn" onclick="speak('небо')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">голубой</div>
+            <div class="cn">浅蓝色</div>
+        </div>
+        <div class="audio-btn" onclick="speak('голубой')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">зелёный</div>
+            <div class="cn">绿色</div>
+        </div>
+        <div class="audio-btn" onclick="speak('зелёный')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">жёлтый</div>
+            <div class="cn">黄色</div>
+        </div>
+        <div class="audio-btn" onclick="speak('жёлтый')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">дерево / деревья</div>
+            <div class="cn">树（单数 / 复数）</div>
+        </div>
+        <div class="audio-btn" onclick="speak('дерево деревья')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">купить</div>
+            <div class="cn">买（完成体）</div>
+        </div>
+        <div class="audio-btn" onclick="speak('купить')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">одежда</div>
+            <div class="cn">衣服</div>
+        </div>
+        <div class="audio-btn" onclick="speak('одежда')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">экономический</div>
+            <div class="cn">经济的</div>
+        </div>
+        <div class="audio-btn" onclick="speak('экономический')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">экономист</div>
+            <div class="cn">经济学家</div>
+        </div>
+        <div class="audio-btn" onclick="speak('экономист')">🔊</div>
+    </div>
+
+    <div class="word">
+        <div class="left-part" onclick="toggle(this)">
+            <div class="ru">дружба</div>
+            <div class="cn">友谊</div>
+        </div>
+        <div class="audio-btn" onclick="speak('дружба')">🔊</div>
+    </div>
 </div>
 
-<div class="word" onclick="toggle(this)">
-    <div class="ru">проверять</div>
-    <div class="cn">检查（未完成体）</div>
-</div>
+<script>
+// 单个显示隐藏
+function toggle(el) {
+    const cn = el.querySelector('.cn');
+    cn.style.display = (cn.style.display === 'none' || cn.style.display === '') ? 'block' : 'none';
+}
 
-<div class="word" onclick="toggle(this)">
-    <div class="ru">проверить</div>
-    <div class="cn">检查（完成体）</div>
-</div>
+// 全部显示或隐藏
+function toggleAll(show) {
+    const allCn = document.querySelectorAll('.cn');
+    allCn.forEach(cn => {
+        cn.style.display = show ? 'block' : 'none';
+    });
+}
 
-<div class="word" onclick="toggle(this)">
-    <div class="ru">точно</div>
-    <div class="cn">准确地；准时</div>
-</div>
+// 随机洗牌功能
+function shuffleWords() {
+    const list = document.getElementById('wordList');
+    const words = Array.from(list.children);
+    for (let i = words.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        list.appendChild(words[j]);
+    }
+}
 
-<div class="word" onclick="toggle(this)">
-    <div class="ru">нужно</div>
-    <div class="cn">需要；必须</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">здоров ≠ болен</div>
-    <div class="cn">健康的 ≠ 生病的</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">входить ≠ выходить</div>
-    <div class="cn">进入 ≠ 出去</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">впереди ≠ сзади</div>
-    <div class="cn">前面 ≠ 后面</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">кончаться ≠ начинаться</div>
-    <div class="cn">结束 ≠ 开始</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">спешить</div>
-    <div class="cn">着急；赶时间</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">остановка</div>
-    <div class="cn">车站；站点</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">работа</div>
-    <div class="cn">工作</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">рабочий</div>
-    <div class="cn">工作的；工人</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">осень</div>
-    <div class="cn">秋天</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">осенью</div>
-    <div class="cn">在秋天</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">осенний</div>
-    <div class="cn">秋天的</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">день</div>
-    <div class="cn">白天；一天</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">дождь</div>
-    <div class="cn">雨</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">солнце</div>
-    <div class="cn">太阳</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">может быть</div>
-    <div class="cn">可能；也许</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">напротив</div>
-    <div class="cn">在……对面</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">светить</div>
-    <div class="cn">照耀；发光</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">небо</div>
-    <div class="cn">天空</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">голубой</div>
-    <div class="cn">浅蓝色</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">зелёный</div>
-    <div class="cn">绿色</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">жёлтый</div>
-    <div class="cn">黄色</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">дерево / деревья</div>
-    <div class="cn">树（单数 / 复数）</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">купить</div>
-    <div class="cn">买（完成体）</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">одежда</div>
-    <div class="cn">衣服</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">экономический</div>
-    <div class="cn">经济的</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">экономист</div>
-    <div class="cn">经济学家</div>
-</div>
-
-<div class="word" onclick="toggle(this)">
-    <div class="ru">дружба</div>
-    <div class="cn">友谊</div>
-</div>
+// 俄语语音功能
+function speak(text) {
+    const msg = new SpeechSynthesisUtterance();
+    msg.text = text;
+    msg.lang = 'ru-RU'; // 设置为俄语
+    window.speechSynthesis.speak(msg);
+}
+</script>
 
 </body>
 </html>
