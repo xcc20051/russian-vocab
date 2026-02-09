@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>俄语第16课 · 智能背词版</title>
+<title>俄语第16课 · 智能背词增强版</title>
 <style>
+    :root {
+        --primary: #3498db;
+        --secondary: #95a5a6;
+        --accent: #e67e22;
+        --error: #e74c3c;
+        --success: #27ae60;
+    }
     body {
         font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         background: #f4f6f8;
@@ -13,81 +20,104 @@
         max-width: 800px;
         margin: 0 auto;
     }
-    h1 {
-        text-align: center;
-        color: #2c3e50;
-    }
-    /* 控制按钮样式 */
+    h1 { text-align: center; color: #2c3e50; }
+    
     .controls {
         text-align: center;
         margin-bottom: 20px;
         position: sticky;
-        top: 10px;
+        top: 0;
         z-index: 100;
+        background: rgba(244, 246, 248, 0.95);
+        padding: 15px;
+        border-bottom: 2px solid #ddd;
     }
+    
     button {
-        background: #3498db;
+        background: var(--primary);
         color: white;
         border: none;
-        padding: 10px 15px;
+        padding: 10px 18px;
         margin: 5px;
-        border-radius: 5px;
+        border-radius: 6px;
         cursor: pointer;
         font-size: 14px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: 0.2s;
     }
-    button:hover { background: #2980b9; }
-    button.secondary { background: #95a5a6; }
+    button:hover { opacity: 0.9; transform: translateY(-1px); }
+    button.secondary { background: var(--secondary); }
+    button.test-btn { background: var(--accent); }
+    button.clear-btn { background: #555; font-size: 12px; padding: 5px 10px; }
 
-    .word-container {
-        display: flex;
-        flex-direction: column;
-    }
+    .word-container { display: flex; flex-direction: column; }
     .word {
         background: white;
-        margin: 8px auto;
-        padding: 16px;
-        width: 100%;
-        box-sizing: border-box;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        margin: 10px 0;
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: transform 0.2s;
+        border-left: 5px solid transparent;
     }
-    .word:active { transform: scale(0.98); }
+    .word.is-wrong { border-left-color: var(--error); }
     
-    .left-part {
-        flex: 1;
-        cursor: pointer;
+    .left-part { flex: 1; }
+    .ru { font-size: 24px; font-weight: bold; color: #2c3e50; }
+    .cn { margin-top: 8px; color: var(--success); font-size: 17px; font-weight: 600; }
+
+    /* 测验与纠错样式 */
+    .test-input {
+        width: 90%;
+        padding: 10px;
+        font-size: 18px;
+        border: 2px solid #eee;
+        border-radius: 6px;
+        margin-top: 10px;
+        outline: none;
+        transition: border 0.3s;
     }
-    .ru {
-        font-size: 22px;
-        font-weight: bold;
-        color: #2c3e50;
+    .test-input:focus { border-color: var(--primary); }
+    
+    .diff-result {
+        margin-top: 10px;
+        font-family: "Consolas", monospace;
+        font-size: 18px;
+        padding: 8px;
+        background: #fdfdfd;
+        border: 1px solid #eee;
+        border-radius: 6px;
     }
-    .cn {
-        margin-top: 8px;
+    .char-correct { color: var(--success); }
+    .char-wrong { color: var(--error); text-decoration: underline; font-weight: bold; background: #fff0f0; }
+    .char-missing { color: #bbb; border-bottom: 2px dashed #ccc; }
+
+    /* 错题本区域 */
+    #wrongBookSection {
+        margin-top: 40px;
+        padding: 20px;
+        background: #fff0f0;
+        border-radius: 12px;
+        border: 2px dashed var(--error);
         display: none;
-        color: #27ae60;
-        font-size: 17px;
-        font-weight: 500;
     }
+    #wrongBookSection h2 { color: var(--error); margin-top: 0; }
+
     .audio-btn {
         background: #f0f0f0;
         border-radius: 50%;
-        width: 35px;
-        height: 35px;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        margin-left: 15px;
-        font-size: 18px;
+        font-size: 20px;
     }
     .tip {
-        margin: 15px auto;
+        margin: 15px 0;
         background: #fffbe6;
         padding: 12px;
         border-left: 6px solid #f1c40f;
@@ -98,317 +128,197 @@
 </head>
 <body>
 
-<h1>第16课 · 俄语背单词</h1>
+<h1>俄语背单词 · 第16课</h1>
 
-<div class="tip">
-💡 技巧：点击左侧单词显示翻译，点击右侧 🔊 听发音。
+<div class="tip" id="modeTip">
+💡 当前模式：<b>浏览模式</b>。
 </div>
 
 <div class="controls">
-    <button onclick="shuffleWords()">🔀 乱序排列</button>
-    <button class="secondary" onclick="toggleAll(true)">👁️ 全部显示</button>
-    <button class="secondary" onclick="toggleAll(false)">🙈 全部隐藏</button>
+    <button onclick="shuffleWords()">🔀 随机乱序</button>
+    <button id="toggleModeBtn" class="test-btn" onclick="toggleTestMode()">✍️ 进入默写模式</button>
+    <span id="viewControls">
+        <button class="secondary" onclick="toggleAll(true)">👁️ 显示全部</button>
+        <button class="secondary" onclick="toggleAll(false)">🙈 隐藏全部</button>
+    </span>
 </div>
 
-<div id="wordList" class="word-container">
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">утро</div>
-            <div class="cn">早晨</div>
-        </div>
-        <div class="audio-btn" onclick="speak('утро')">🔊</div>
-    </div>
+<div id="wordList" class="word-container"></div>
 
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">часы</div>
-            <div class="cn">钟；小时</div>
-        </div>
-        <div class="audio-btn" onclick="speak('часы')">🔊</div>
+<div id="wrongBookSection">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>🚩 错题本 (加油，这些还没掌握)</h2>
+        <button class="clear-btn" onclick="clearWrongBook()">清空记录</button>
     </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">проверять</div>
-            <div class="cn">检查（未完成体）</div>
-        </div>
-        <div class="audio-btn" onclick="speak('проверять')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">проверить</div>
-            <div class="cn">检查（完成体）</div>
-        </div>
-        <div class="audio-btn" onclick="speak('проверить')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">точно</div>
-            <div class="cn">准确地；准时</div>
-        </div>
-        <div class="audio-btn" onclick="speak('точно')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">нужно</div>
-            <div class="cn">需要；必须</div>
-        </div>
-        <div class="audio-btn" onclick="speak('нужно')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">здоров ≠ болен</div>
-            <div class="cn">健康的 ≠ 生病的</div>
-        </div>
-        <div class="audio-btn" onclick="speak('здоров болен')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">входить ≠ выходить</div>
-            <div class="cn">进入 ≠ 出去</div>
-        </div>
-        <div class="audio-btn" onclick="speak('входить выходить')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">впереди ≠ сзади</div>
-            <div class="cn">前面 ≠ 后面</div>
-        </div>
-        <div class="audio-btn" onclick="speak('впереди сзади')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">кончаться ≠ начинаться</div>
-            <div class="cn">结束 ≠ 开始</div>
-        </div>
-        <div class="audio-btn" onclick="speak('кончаться начинаться')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">спешить</div>
-            <div class="cn">着急；赶时间</div>
-        </div>
-        <div class="audio-btn" onclick="speak('спешить')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">остановка</div>
-            <div class="cn">车站；站点</div>
-        </div>
-        <div class="audio-btn" onclick="speak('остановка')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">работа</div>
-            <div class="cn">工作</div>
-        </div>
-        <div class="audio-btn" onclick="speak('работа')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">рабочий</div>
-            <div class="cn">工作的；工人</div>
-        </div>
-        <div class="audio-btn" onclick="speak('рабочий')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">осень</div>
-            <div class="cn">秋天</div>
-        </div>
-        <div class="audio-btn" onclick="speak('осень')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">осенью</div>
-            <div class="cn">在秋天</div>
-        </div>
-        <div class="audio-btn" onclick="speak('осенью')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">осенний</div>
-            <div class="cn">秋天的</div>
-        </div>
-        <div class="audio-btn" onclick="speak('осенний')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">день</div>
-            <div class="cn">白天；一天</div>
-        </div>
-        <div class="audio-btn" onclick="speak('день')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">дождь</div>
-            <div class="cn">雨</div>
-        </div>
-        <div class="audio-btn" onclick="speak('дождь')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">солнце</div>
-            <div class="cn">太阳</div>
-        </div>
-        <div class="audio-btn" onclick="speak('солнце')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">может быть</div>
-            <div class="cn">可能；也许</div>
-        </div>
-        <div class="audio-btn" onclick="speak('может быть')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">напротив</div>
-            <div class="cn">在……对面</div>
-        </div>
-        <div class="audio-btn" onclick="speak('напротив')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">светить</div>
-            <div class="cn">照耀；发光</div>
-        </div>
-        <div class="audio-btn" onclick="speak('светить')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">небо</div>
-            <div class="cn">天空</div>
-        </div>
-        <div class="audio-btn" onclick="speak('небо')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">голубой</div>
-            <div class="cn">浅蓝色</div>
-        </div>
-        <div class="audio-btn" onclick="speak('голубой')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">зелёный</div>
-            <div class="cn">绿色</div>
-        </div>
-        <div class="audio-btn" onclick="speak('зелёный')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">жёлтый</div>
-            <div class="cn">黄色</div>
-        </div>
-        <div class="audio-btn" onclick="speak('жёлтый')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">дерево / деревья</div>
-            <div class="cn">树（单数 / 复数）</div>
-        </div>
-        <div class="audio-btn" onclick="speak('дерево деревья')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">купить</div>
-            <div class="cn">买（完成体）</div>
-        </div>
-        <div class="audio-btn" onclick="speak('купить')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">одежда</div>
-            <div class="cn">衣服</div>
-        </div>
-        <div class="audio-btn" onclick="speak('одежда')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">экономический</div>
-            <div class="cn">经济的</div>
-        </div>
-        <div class="audio-btn" onclick="speak('экономический')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">экономист</div>
-            <div class="cn">经济学家</div>
-        </div>
-        <div class="audio-btn" onclick="speak('экономист')">🔊</div>
-    </div>
-
-    <div class="word">
-        <div class="left-part" onclick="toggle(this)">
-            <div class="ru">дружба</div>
-            <div class="cn">友谊</div>
-        </div>
-        <div class="audio-btn" onclick="speak('дружба')">🔊</div>
-    </div>
+    <div id="wrongList" class="word-container"></div>
 </div>
 
 <script>
-// 单个显示隐藏
-function toggle(el) {
-    const cn = el.querySelector('.cn');
-    cn.style.display = (cn.style.display === 'none' || cn.style.display === '') ? 'block' : 'none';
+// 数据源
+const originalData = [
+    {ru: "утро", cn: "早晨"}, {ru: "часы", cn: "钟；小时"}, {ru: "проверять", cn: "检查（未完成体）"},
+    {ru: "проверить", cn: "检查（完成体）"}, {ru: "точно", cn: "准确地；准时"}, {ru: "нужно", cn: "需要；必须"},
+    {ru: "здоров ≠ болен", cn: "健康的 ≠ 生病的"}, {ru: "входить ≠ выходить", cn: "进入 ≠ 出去"},
+    {ru: "впереди ≠ сzaди", cn: "前面 ≠ 后面"}, {ru: "кончаться ≠ начинаться", cn: "结束 ≠ 开始"},
+    {ru: "спешить", cn: "着急；赶时间"}, {ru: "остановка", cn: "车站；站点"}, {ru: "работа", cn: "工作"},
+    {ru: "рабочий", cn: "工作的；工人"}, {ru: "осень", cn: "秋天"}, {ru: "осенью", cn: "在秋天"},
+    {ru: "осенний", cn: "秋天的"}, {ru: "день", cn: "白天；一天"}, {ru: "дождь", cn: "雨"},
+    {ru: "солнце", cn: "太阳"}, {ru: "может быть", cn: "可能；也许"}, {ru: "напротив", cn: "在……对面"},
+    {ru: "светить", cn: "照耀；发光"}, {ru: "небо", cn: "天空"}, {ru: "голубой", cn: "浅蓝色"},
+    {ru: "зелёный", cn: "绿色"}, {ru: "жёлтый", cn: "黄色"}, {ru: "дерево / деревья", cn: "树（单数 / 复数）"},
+    {ru: "купить", cn: "买（完成体）"}, {ru: "одежда", cn: "衣服"}, {ru: "экономический", cn: "经济的"},
+    {ru: "экономист", cn: "经济学家"}, {ru: "дружба", cn: "友谊"}
+];
+
+let wordData = [...originalData];
+let isTestMode = false;
+let wrongWords = new Set(); // 使用Set记录错题，避免重复
+
+// 初始化渲染
+function renderWords() {
+    const list = document.getElementById('wordList');
+    list.innerHTML = '';
+    wordData.forEach((item, index) => {
+        list.appendChild(createWordElement(item, index, "main"));
+    });
+    updateWrongBookUI();
 }
 
-// 全部显示或隐藏
-function toggleAll(show) {
-    const allCn = document.querySelectorAll('.cn');
-    allCn.forEach(cn => {
-        cn.style.display = show ? 'block' : 'none';
+// 创建单词HTML元素
+function createWordElement(item, index, listType) {
+    const wordDiv = document.createElement('div');
+    wordDiv.className = 'word';
+    const idPrefix = listType === "main" ? `main-${index}` : `wrong-${index}`;
+
+    if (!isTestMode) {
+        wordDiv.innerHTML = `
+            <div class="left-part" onclick="toggle(this)">
+                <div class="ru">${item.ru}</div>
+                <div class="cn" style="display:none">${item.cn}</div>
+            </div>
+            <div class="audio-btn" onclick="speak('${item.ru}')">🔊</div>
+        `;
+    } else {
+        wordDiv.innerHTML = `
+            <div class="left-part">
+                <div class="cn" style="display:block">${item.cn}</div>
+                <input type="text" class="test-input" placeholder="拼写俄语..." 
+                    oninput="checkWord(this, '${item.ru}', '${idPrefix}')">
+                <div id="diff-${idPrefix}" class="diff-result" style="display:none"></div>
+            </div>
+            <div class="audio-btn" onclick="speak('${item.ru}')">🔊</div>
+        `;
+    }
+    return wordDiv;
+}
+
+// 核心比对与错题记录
+function checkWord(inputEl, correctWord, id) {
+    const userInput = inputEl.value.trim().toLowerCase();
+    const target = correctWord.toLowerCase();
+    const diffDiv = document.getElementById(`diff-${id}`);
+    
+    if (userInput === "") {
+        diffDiv.style.display = 'none';
+        return;
+    }
+    
+    diffDiv.style.display = 'block';
+    
+    // 逻辑：如果输入长度达到正确单词的一半，且依然不匹配，则加入错题本
+    if (userInput !== target && userInput.length >= target.length / 2) {
+        if (!wrongWords.has(correctWord)) {
+            wrongWords.add(correctWord);
+            updateWrongBookUI();
+        }
+    }
+
+    if (userInput === target) {
+        diffDiv.innerHTML = `<span class="char-correct">✓ 太棒了，拼写正确!</span>`;
+        return;
+    }
+
+    // 逐字对比
+    let resultHtml = "";
+    const maxLength = Math.max(userInput.length, target.length);
+    for (let i = 0; i < maxLength; i++) {
+        const u = userInput[i];
+        const t = target[i];
+        if (u === t) resultHtml += `<span class="char-correct">${u}</span>`;
+        else if (u === undefined) resultHtml += `<span class="char-missing">${t}</span>`;
+        else resultHtml += `<span class="char-wrong">${u}</span>`;
+    }
+    diffDiv.innerHTML = `纠错：${resultHtml} <br><small style="color:#888">参考：${correctWord}</small>`;
+}
+
+// 更新错题本显示
+function updateWrongBookUI() {
+    const section = document.getElementById('wrongBookSection');
+    const list = document.getElementById('wrongList');
+    
+    if (wrongWords.size === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = 'block';
+    list.innerHTML = '';
+    
+    // 从原始数据中找出对应的错题信息
+    Array.from(wrongWords).forEach((wrongRu, index) => {
+        const item = originalData.find(d => d.ru === wrongRu);
+        if (item) {
+            list.appendChild(createWordElement(item, index, "wrong"));
+        }
     });
 }
 
-// 随机洗牌功能
-function shuffleWords() {
-    const list = document.getElementById('wordList');
-    const words = Array.from(list.children);
-    for (let i = words.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        list.appendChild(words[j]);
-    }
+function clearWrongBook() {
+    wrongWords.clear();
+    updateWrongBookUI();
 }
 
-// 俄语语音功能
+function toggleTestMode() {
+    isTestMode = !isTestMode;
+    const btn = document.getElementById('toggleModeBtn');
+    const viewControls = document.getElementById('viewControls');
+    const tip = document.getElementById('modeTip');
+    
+    if (isTestMode) {
+        btn.innerText = "📖 返回浏览模式";
+        viewControls.style.display = 'none';
+        tip.innerHTML = "✍️ <b>默写模式</b>：拼写错误将自动记入底部的【错题本】。";
+    } else {
+        btn.innerText = "✍️ 进入默写模式";
+        viewControls.style.display = 'inline';
+        tip.innerHTML = "💡 <b>浏览模式</b>：点击单词可查看翻译。";
+    }
+    renderWords();
+}
+
+// 基础辅助函数
+function toggle(el) {
+    const cn = el.querySelector('.cn');
+    cn.style.display = (cn.style.display === 'none') ? 'block' : 'none';
+}
+function toggleAll(show) {
+    document.querySelectorAll('.cn').forEach(cn => cn.style.display = show ? 'block' : 'none');
+}
+function shuffleWords() {
+    wordData.sort(() => Math.random() - 0.5);
+    renderWords();
+}
 function speak(text) {
     const msg = new SpeechSynthesisUtterance();
     msg.text = text;
-    msg.lang = 'ru-RU'; // 设置为俄语
+    msg.lang = 'ru-RU';
     window.speechSynthesis.speak(msg);
 }
+
+// 初始加载
+renderWords();
 </script>
 
 </body>
 </html>
+
