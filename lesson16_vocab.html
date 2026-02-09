@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第16课 背单词版</title>
+<style>
+    body {
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        background: #f4f6f8;
+        padding: 30px;
+        color: #222;
+    }
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+    }
+    .word {
+        background: white;
+        margin: 10px auto;
+        padding: 14px 18px;
+        max-width: 600px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        cursor: pointer;
+    }
+    .ru {
+        font-size: 20px;
+        font-weight: bold;
+        color: #34495e;
+    }
+    .cn {
+        margin-top: 8px;
+        display: none;
+        color: #27ae60;
+        font-size: 16px;
+    }
+    .tip {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #fffbe6;
+        padding: 12px 16px;
+        border-left: 6px solid #f1c40f;
+        font-size: 14px;
+    }
+</style>
+
+<script>
+function toggle(el) {
+    const cn = el.querySelector('.cn');
+    cn.style.display = cn.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+</head>
+
+<body>
+
+<h1>第16课 · 背单词版</h1>
+
+<div class="tip">
+👉 点击每个单词显示/隐藏中文，先想意思再点，效果最好。
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">утро</div>
+    <div class="cn">早晨</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">часы</div>
+    <div class="cn">钟；小时</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">проверять</div>
+    <div class="cn">检查（未完成体）</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">проверить</div>
+    <div class="cn">检查（完成体）</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">точно</div>
+    <div class="cn">准确地；准时</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">нужно</div>
+    <div class="cn">需要；必须</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">здоров ≠ болен</div>
+    <div class="cn">健康的 ≠ 生病的</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">входить ≠ выходить</div>
+    <div class="cn">进入 ≠ 出去</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">впереди ≠ сзади</div>
+    <div class="cn">前面 ≠ 后面</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">кончаться ≠ начинаться</div>
+    <div class="cn">结束 ≠ 开始</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">спешить</div>
+    <div class="cn">着急；赶时间</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">остановка</div>
+    <div class="cn">车站；站点</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">работа</div>
+    <div class="cn">工作</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">рабочий</div>
+    <div class="cn">工作的；工人</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">осень</div>
+    <div class="cn">秋天</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">осенью</div>
+    <div class="cn">在秋天</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">осенний</div>
+    <div class="cn">秋天的</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">день</div>
+    <div class="cn">白天；一天</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">дождь</div>
+    <div class="cn">雨</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">солнце</div>
+    <div class="cn">太阳</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">может быть</div>
+    <div class="cn">可能；也许</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">напротив</div>
+    <div class="cn">在……对面</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">светить</div>
+    <div class="cn">照耀；发光</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">небо</div>
+    <div class="cn">天空</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">голубой</div>
+    <div class="cn">浅蓝色</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">зелёный</div>
+    <div class="cn">绿色</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">жёлтый</div>
+    <div class="cn">黄色</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">дерево / деревья</div>
+    <div class="cn">树（单数 / 复数）</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">купить</div>
+    <div class="cn">买（完成体）</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">одежда</div>
+    <div class="cn">衣服</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">экономический</div>
+    <div class="cn">经济的</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">экономист</div>
+    <div class="cn">经济学家</div>
+</div>
+
+<div class="word" onclick="toggle(this)">
+    <div class="ru">дружба</div>
+    <div class="cn">友谊</div>
+</div>
+
+</body>
+</html>
