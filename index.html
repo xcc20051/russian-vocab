@@ -76,8 +76,19 @@
     <h1>🇷🇺 俄语背单词</h1>
     <select id="lessonSelect" onchange="initData()">
         <option value="all">📚 全部分数（复习汇总）</option>
+        <option value="L1/1" selected>第 1/1 课</option>
+        <option value="L1/2" selected>第 1/2 课</option>
+        <option value="L1/3" selected>第 1/3 课</option>
+        <option value="L2/1" selected>第 2/1 课</option>
+        <option value="L2/2" selected>第 2/2 课</option>
+        <option value="L2/3" selected>第 2/3 课</option>
         <option value="L3/1" selected>第 3/1 课</option>
-        <option value="L3/2">第 3/2 课</option>
+        <option value="L3/2" selected>第 3/2 课</option>
+        <option value="L3/3" selected>第 3/3 课</option>
+        <option value="L4/1" selected>第 4/1 课</option>
+        <option value="L4/2" selected>第 4/2 课</option>
+        <option value="L4/3" selected>第 4/3 课</option>
+        <option value="L10">第 10 课</option>
     </select>
 </div>
 
@@ -102,6 +113,23 @@
 <script>
 // 1. 数据配置区：在这里添加你的新课程
 const allLessons = {
+    "L3/1": [
+        {ru: "коридор", cn: "走廊"}, {ru: "вещь", cn: "东西；物品"}, {ru: "дежурный", cn: "值日生；值班人员"},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""},
+        {ru: "", cn: ""}, {ru: "", cn: "；"}, {ru: "", cn: ""}
+    ],
     "L3/1": [
         {ru: "утро", cn: "早晨"}, {ru: "часы", cn: "钟；小时"}, {ru: "проверять", cn: "检查(未完成)"},
         {ru: "проверить", cn: "检查(完成)"}, {ru: "точно", cn: "准确地"}, {ru: "нужно", cn: "需要"},
