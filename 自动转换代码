@@ -1,0 +1,40 @@
+<div style="background: #e3f2fd; padding: 20px; border-radius: 12px; margin-top: 50px; border: 2px dashed #2196f3;">
+    <h3>🛠️ 单词批量转换工具</h3>
+    <p style="font-size: 13px; color: #666;">直接从网页或 Excel 复制单词列表，粘贴在下方：</p>
+    <textarea id="rawInput" style="width: 100%; height: 150px; padding: 10px; border-radius: 8px;" placeholder="例如：
+коридор  走廊
+вещь  东西"></textarea>
+    <button onclick="convertWords()" style="background: #2196f3; width: 100%; margin-top: 10px;">✨ 立即生成代码格式</button>
+    
+    <p style="margin-top: 15px; font-weight: bold;">生成的代码（直接复制到 allLessons 里）：</p>
+    <textarea id="finalOutput" style="width: 100%; height: 150px; padding: 10px; background: #fafafa; border: 1px solid #ccc;" readonly></textarea>
+</div>
+
+<script>
+function convertWords() {
+    const input = document.getElementById('rawInput').value;
+    const lines = input.split('\n');
+    let result = [];
+
+    lines.forEach(line => {
+        if (line.trim()) {
+            // 自动识别空格、制表符或逗号分隔
+            const parts = line.split(/\s{2,}|\t/); 
+            if (parts.length >= 2) {
+                const ru = parts[0].trim();
+                const cn = parts[1].trim();
+                result.push(`{ru: "${ru}", cn: "${cn}"}`);
+            } else {
+                // 如果分隔不明显，尝试普通空格
+                const simpleParts = line.trim().split(/\s+/);
+                if (simpleParts.length >= 2) {
+                    const ru = simpleParts[0].trim();
+                    const cn = simpleParts.slice(1).join(' ').trim();
+                    result.push(`{ru: "${ru}", cn: "${cn}"}`);
+                }
+            }
+        }
+    });
+    document.getElementById('finalOutput').value = result.join(',\n') + ',';
+}
+</script>
