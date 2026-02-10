@@ -3,304 +3,238 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>俄语全能背词版</title>
+<title>俄语背单词 · 专业版</title>
 <style>
     :root {
-        --primary: #3498db;
-        --secondary: #95a5a6;
-        --accent: #e67e22;
-        --error: #e74c3c;
-        --success: #27ae60;
+        --primary: #3498db; --secondary: #95a5a6; --accent: #e67e22;
+        --error: #e74c3c; --success: #27ae60; --bg: #f4f6f8;
     }
     body {
-        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-        background: #f4f6f8;
-        padding: 20px;
-        color: #222;
-        max-width: 800px;
-        margin: 0 auto;
+        font-family: "Segoe UI", "PingFang SC", sans-serif;
+        background: var(--bg); padding: 20px; color: #222;
+        max-width: 800px; margin: 0 auto;
     }
-    h1 { text-align: center; color: #2c3e50; }
-    
+    .header-box {
+        background: white; padding: 20px; border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px;
+    }
+    select {
+        padding: 10px; font-size: 16px; width: 100%; max-width: 300px;
+        border-radius: 8px; border: 2px solid #ddd; margin: 10px 0;
+    }
     .controls {
-        text-align: center;
-        margin-bottom: 20px;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: rgba(244, 246, 248, 0.95);
-        padding: 15px;
-        border-bottom: 2px solid #ddd;
-        border-radius: 0 0 10px 10px;
+        position: sticky; top: 10px; z-index: 100;
+        background: white; padding: 15px; border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;
+        display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
     }
-    
     button {
-        background: var(--primary);
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        margin: 5px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: 0.2s;
+        background: var(--primary); color: white; border: none;
+        padding: 10px 16px; border-radius: 8px; cursor: pointer;
+        font-weight: bold; transition: 0.2s;
     }
     button:hover { opacity: 0.9; transform: translateY(-1px); }
-    button.secondary { background: var(--secondary); }
     button.test-btn { background: var(--accent); }
-    button.submit-btn { background: #2ecc71; font-weight: bold; width: 100%; margin: 20px 0; font-size: 18px; display: none; }
+    button.secondary { background: var(--secondary); }
+    button.submit-btn { background: #2ecc71; width: 100%; margin: 20px 0; font-size: 18px; display: none; }
 
     .word {
-        background: white;
-        margin: 10px 0;
-        padding: 18px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        background: white; margin: 12px 0; padding: 20px;
+        border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        display: flex; justify-content: space-between; align-items: center;
     }
-    
     .left-part { flex: 1; }
-    .ru { font-size: 24px; font-weight: bold; color: #2c3e50; transition: 0.3s; }
-    .cn { color: var(--success); font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-
+    .ru { font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 5px; cursor: pointer;}
+    .cn { color: var(--success); font-size: 18px; font-weight: 600; }
+    
     .test-input {
-        width: 95%;
-        padding: 12px;
-        font-size: 18px;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        margin-top: 10px;
-        outline: none;
+        width: 100%; padding: 12px; font-size: 18px; border: 2px solid #ddd;
+        border-radius: 8px; margin-top: 10px; box-sizing: border-box;
     }
-
-    /* 纠错样式 */
     .diff-result {
-        margin-top: 10px;
-        font-family: "Consolas", monospace;
-        font-size: 18px;
-        padding: 10px;
-        background: #f9f9f9;
-        border-radius: 6px;
-        display: none;
+        margin-top: 10px; padding: 12px; border-radius: 8px;
+        background: #f8f9fa; display: none; line-height: 1.6;
     }
     .char-correct { color: var(--success); }
-    .char-wrong { color: var(--error); text-decoration: underline; background: #fff0f0; font-weight: bold; }
-    .char-missing { color: #aaa; border-bottom: 2px dashed #aaa; }
-
-    #wrongBookSection {
-        margin-top: 40px;
-        padding: 20px;
-        background: #fff0f0;
-        border-radius: 12px;
-        border: 2px solid var(--error);
-        display: none;
-    }
+    .char-wrong { color: var(--error); text-decoration: underline; font-weight: bold; }
+    .char-missing { color: #aaa; text-decoration: line-through; }
     
     .audio-btn {
-        background: #f0f0f0;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 20px;
-        margin-left: 15px;
+        background: #f0f3f5; border-radius: 50%; width: 45px; height: 45px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 20px; margin-left: 15px;
     }
-    .tip {
-        margin: 15px 0;
-        background: #fffbe6;
-        padding: 12px;
-        border-left: 6px solid #f1c40f;
-        font-size: 14px;
-        border-radius: 4px;
+    #wrongBookSection {
+        display: none; background: #fff0f0; padding: 20px;
+        border-radius: 12px; border: 2px solid var(--error); margin-top: 30px;
     }
 </style>
 </head>
 <body>
 
-<h1>俄语背单词</h1>
-
-<div class="tip" id="modeTip">
-💡 当前模式：<b>浏览模式</b>。点击左侧可切换翻译显示。
+<div class="header-box">
+    <h1>🇷🇺 俄语背单词</h1>
+    <select id="lessonSelect" onchange="initData()">
+        <option value="all">📚 全部分数（复习汇总）</option>
+        <option value="L16" selected>第 16 课</option>
+        <option value="L17">第 17 课</option>
+    </select>
 </div>
 
 <div class="controls">
-    <button onclick="shuffleWords()">🔀 乱序排列</button>
-    <button id="toggleModeBtn" class="test-btn" onclick="toggleMode()">✍️ 进入默写模式</button>
-    <span id="viewControls">
-        <button class="secondary" onclick="toggleAll(true)">👁️ 全部显示</button>
-        <button class="secondary" onclick="toggleAll(false)">🙈 全部隐藏</button>
+    <button onclick="shuffleWords()">🔀 随机乱序</button>
+    <button id="modeBtn" class="test-btn" onclick="toggleMode()">✍️ 进入默写模式</button>
+    <span id="viewCtrl">
+        <button class="secondary" onclick="toggleAll(true)">👁️ 显</button>
+        <button class="secondary" onclick="toggleAll(false)">🙈 隐</button>
     </span>
 </div>
 
-<div id="wordList" class="word-container"></div>
+<div id="wordList"></div>
 
-<button id="submitBtn" class="submit-btn" onclick="submitTest()">📝 完成交卷，查看纠错结果</button>
+<button id="submitBtn" class="submit-btn" onclick="submitTest()">📝 提交阅卷</button>
 
 <div id="wrongBookSection">
-    <h2 style="color: var(--error);">🚩 错题汇总 (需加强记忆)</h2>
+    <h2 style="color: var(--error);">🚩 错题本</h2>
     <div id="wrongList"></div>
 </div>
 
 <script>
-// 初始数据
-let wordData = [
-    {ru: "утро", cn: "早晨"}, {ru: "часы", cn: "钟；小时"}, {ru: "проверять", cn: "检查（未完成体）"},
-    {ru: "проверить", cn: "检查（完成体）"}, {ru: "точно", cn: "准确地；准时"}, {ru: "нужно", cn: "需要；必须"},
-    {ru: "здоров ≠ болен", cn: "健康的 ≠ 生病的"}, {ru: "входить ≠ выходить", cn: "进入 ≠ 出去"},
-    {ru: "впереди ≠ сзади", cn: "前面 ≠ 后面"}, {ru: "кончаться ≠ начинаться", cn: "结束 ≠ 开始"},
-    {ru: "спешить", cn: "着急；赶时间"}, {ru: "остановка", cn: "车站；站点"}, {ru: "работа", cn: "工作"},
-    {ru: "рабочий", cn: "工作的；工人"}, {ru: "осень", cn: "秋天"}, {ru: "осенью", cn: "在秋天"},
-    {ru: "осенний", cn: "秋天的"}, {ru: "день", cn: "白天；一天"}, {ru: "дождь", cn: "雨"},
-    {ru: "солнце", cn: "太阳"}, {ru: "может быть", cn: "可能；也许"}, {ru: "напротив", cn: "在……对面"},
-    {ru: "светить", cn: "照耀；发光"}, {ru: "небо", cn: "天空"}, {ru: "голубой", cn: "浅蓝色"},
-    {ru: "зелёный", cn: "绿色"}, {ru: "жёлтый", cn: "黄色"}, {ru: "дерево / деревья", cn: "树（单数 / 复数）"},
-    {ru: "купить", cn: "买（完成体）"}, {ru: "одежда", cn: "衣服"}, {ru: "экономический", cn: "经济的"},
-    {ru: "экономист", cn: "经济学家"}, {ru: "дружба", cn: "友谊"}
-];
+// 1. 数据配置区：在这里添加你的新课程
+const allLessons = {
+    "L16": [
+        {ru: "утро", cn: "早晨"}, {ru: "часы", cn: "钟；小时"}, {ru: "проверять", cn: "检查(未完成)"},
+        {ru: "проверить", cn: "检查(完成)"}, {ru: "точно", cn: "准确地"}, {ru: "нужно", cn: "需要"},
+        {ru: "здоров ≠ болен", cn: "健康 ≠ 生病"}, {ru: "входить ≠ выходить", cn: "进入 ≠ 出去"},
+        {ru: "впереди ≠ сзади", cn: "前面 ≠ 后面"}, {ru: "кончаться ≠ начинаться", cn: "结束 ≠ 开始"},
+        {ru: "спешить", cn: "赶时间"}, {ru: "остановка", cn: "车站"}, {ru: "работа", cn: "工作"},
+        {ru: "рабочий", cn: "工人"}, {ru: "осень", cn: "秋天"}, {ru: "осенью", cn: "在秋天"},
+        {ru: "осенний", cn: "秋天的"}, {ru: "день", cn: "白天"}, {ru: "дождь", cn: "雨"},
+        {ru: "солнце", cn: "太阳"}, {ru: "может быть", cn: "可能"}, {ru: "напротив", cn: "对面"},
+        {ru: "светить", cn: "照耀"}, {ru: "небо", cn: "天空"}, {ru: "голубой", cn: "浅蓝"},
+        {ru: "зелёный", cn: "绿色"}, {ru: "жёлтый", cn: "黄色"}, {ru: "дерево / деревья", cn: "树(单/复)"},
+        {ru: "купить", cn: "买"}, {ru: "одежда", cn: "衣服"}, {ru: "экономический", cn: "经济的"},
+        {ru: "экономист", cn: "经济学家"}, {ru: "дружба", cn: "友谊"}
+    ],
+    "L17": [
+        {ru: "студент", cn: "学生"}, {ru: "учитель", cn: "老师"}
+    ]
+};
 
+let currentWords = [];
 let isTestMode = false;
 
-// 渲染列表
-function renderWords() {
+// 2. 初始化数据
+function initData() {
+    const val = document.getElementById('lessonSelect').value;
+    if (val === 'all') {
+        currentWords = Object.values(allLessons).flat();
+    } else {
+        currentWords = JSON.parse(JSON.stringify(allLessons[val]));
+    }
+    render();
+}
+
+// 3. 渲染页面
+function render() {
     const list = document.getElementById('wordList');
     list.innerHTML = '';
-    
-    wordData.forEach((item, index) => {
+    currentWords.forEach((item, i) => {
         const div = document.createElement('div');
         div.className = 'word';
-        
         if (!isTestMode) {
-            // 浏览模式内容
             div.innerHTML = `
-                <div class="left-part" onclick="toggleSingle(this)">
+                <div class="left-part" onclick="this.querySelector('.cn').style.display=this.querySelector('.cn').style.display==='none'?'block':'none'">
                     <div class="ru">${item.ru}</div>
                     <div class="cn" style="display:none">${item.cn}</div>
                 </div>
-                <div class="audio-btn" onclick="speak('${item.ru}')">🔊</div>
-            `;
+                <div class="audio-btn" onclick="speak('${item.ru}')">🔊</div>`;
         } else {
-            // 默写模式内容
             div.innerHTML = `
                 <div class="left-part">
                     <div class="cn">${item.cn}</div>
-                    <input type="text" class="test-input" id="input-${index}" placeholder="拼写俄语单词...">
-                    <div id="diff-${index}" class="diff-result"></div>
+                    <input type="text" class="test-input" id="in-${i}" placeholder="输入俄语...">
+                    <div id="df-${i}" class="diff-result"></div>
                 </div>
-                <div class="audio-btn" onclick="speak('${item.ru}')">🔊</div>
-            `;
+                <div class="audio-btn" onclick="speak('${item.ru}')">🔊</div>`;
         }
         list.appendChild(div);
     });
 }
 
-// 功能：切换模式
-function toggleMode() {
-    isTestMode = !isTestMode;
-    const btn = document.getElementById('toggleModeBtn');
-    const viewControls = document.getElementById('viewControls');
-    const submitBtn = document.getElementById('submitBtn');
-    const tip = document.getElementById('modeTip');
-    
-    if (isTestMode) {
-        btn.innerText = "📖 返回浏览模式";
-        viewControls.style.display = 'none';
-        submitBtn.style.display = 'block';
-        tip.innerHTML = "✍️ <b>默写模式</b>：拼写完成后点击最下方的【完成交卷】。";
-    } else {
-        btn.innerText = "✍️ 进入默写模式";
-        viewControls.style.display = 'inline';
-        submitBtn.style.display = 'none';
-        document.getElementById('wrongBookSection').style.display = 'none';
-        tip.innerHTML = "💡 <b>浏览模式</b>：点击左侧可切换翻译显示。";
-    }
-    renderWords();
-}
-
-// 功能：提交测试并纠错
+// 4. 宽容纠错逻辑
 function submitTest() {
-    const wrongList = document.getElementById('wrongList');
-    wrongList.innerHTML = '';
-    let hasWrong = false;
-
-    wordData.forEach((item, index) => {
-        const inputEl = document.getElementById(`input-${index}`);
-        const resDiv = document.getElementById(`diff-${index}`);
-        const userInput = inputEl.value.trim();
-        const correct = item.ru;
-
+    let wrongHTML = '';
+    currentWords.forEach((item, i) => {
+        const input = document.getElementById(`in-${i}`).value.trim();
+        const target = item.ru;
+        const resDiv = document.getElementById(`df-${i}`);
         resDiv.style.display = 'block';
 
-        if (userInput.toLowerCase() === correct.toLowerCase()) {
+        // 宽容化处理：转小写，且去掉非字母符号进行对比
+        const cleanIn = input.toLowerCase().replace(/[^а-яё]/g, '');
+        const cleanTar = target.toLowerCase().replace(/[^а-яё]/g, '');
+
+        if (cleanIn === cleanTar && cleanIn !== "") {
             resDiv.innerHTML = `<span class="char-correct">✓ 正确</span>`;
         } else {
-            hasWrong = true;
-            resDiv.innerHTML = `❌ 纠错：${generateDiff(userInput, correct)}<br><small>正确：${correct}</small>`;
-            
-            // 添加至错题本
-            const wDiv = document.createElement('div');
-            wDiv.className = 'word';
-            wDiv.innerHTML = `<div><div class="cn">${item.cn}</div><div class="ru">${item.ru}</div></div>`;
-            wrongList.appendChild(wDiv);
+            resDiv.innerHTML = `❌ ${generateDiff(input, target)}<br><small>正确：${target}</small>`;
+            wrongHTML += `<div class="word"><div class="left-part"><div class="cn">${item.cn}</div><div class="ru">${item.ru}</div></div></div>`;
         }
     });
 
-    if (hasWrong) {
+    if (wrongHTML) {
         document.getElementById('wrongBookSection').style.display = 'block';
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        document.getElementById('wrongList').innerHTML = wrongHTML;
+        window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
     } else {
-        alert("🎉 太棒了！全部拼写正确！");
+        alert("🎉 全对！太厉害了！");
     }
 }
 
-// 文本比对算法
+// 5. 差异比对算法（可视化纠错）
 function generateDiff(user, target) {
-    let html = "";
-    const max = Math.max(user.length, target.length);
-    for (let i = 0; i < max; i++) {
-        const u = user[i];
-        const t = target[i];
-        if (u === t) html += `<span class="char-correct">${u || ''}</span>`;
-        else if (u === undefined) html += `<span class="char-missing">${t}</span>`;
-        else html += `<span class="char-wrong">${u}</span>`;
+    let res = "";
+    const uArr = user.split('');
+    const tArr = target.split('');
+    const len = Math.max(uArr.length, tArr.length);
+    for(let i=0; i<len; i++) {
+        const u = uArr[i] || '';
+        const t = tArr[i] || '';
+        if (u.toLowerCase() === t.toLowerCase()) res += `<span class="char-correct">${u}</span>`;
+        else if (!u) res += `<span class="char-missing">${t}</span>`;
+        else res += `<span class="char-wrong">${u}</span>`;
     }
-    return html;
+    return res;
 }
 
-// 基础功能：乱序
+// 其他基础功能
+function toggleMode() {
+    isTestMode = !isTestMode;
+    document.getElementById('modeBtn').innerText = isTestMode ? "📖 返回浏览模式" : "✍️ 进入默写模式";
+    document.getElementById('viewCtrl').style.display = isTestMode ? 'none' : 'inline';
+    document.getElementById('submitBtn').style.display = isTestMode ? 'block' : 'none';
+    document.getElementById('wrongBookSection').style.display = 'none';
+    render();
+}
+
 function shuffleWords() {
-    wordData.sort(() => Math.random() - 0.5);
-    renderWords();
+    currentWords.sort(() => Math.random() - 0.5);
+    render();
 }
 
-// 基础功能：单显/单隐
-function toggleSingle(el) {
-    const cn = el.querySelector('.cn');
-    cn.style.display = (cn.style.display === 'none') ? 'block' : 'none';
-}
-
-// 基础功能：全显/全隐
 function toggleAll(show) {
-    document.querySelectorAll('.cn').forEach(cn => {
-        cn.style.display = show ? 'block' : 'none';
-    });
+    document.querySelectorAll('.cn').forEach(el => el.style.display = show?'block':'none');
 }
 
-// 基础功能：朗读
 function speak(text) {
-    const msg = new SpeechSynthesisUtterance();
-    msg.text = text;
+    const cleanText = text.replace(/[^а-яА-ЯёЁ\s]/g, '');
+    const msg = new SpeechSynthesisUtterance(cleanText);
     msg.lang = 'ru-RU';
     window.speechSynthesis.speak(msg);
 }
 
-// 初始化1
-renderWords();
+initData();
 </script>
-
 </body>
 </html>
