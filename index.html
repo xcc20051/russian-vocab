@@ -28,6 +28,11 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;
         display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
     }
+    /* 语速控制条样式 */
+    .speed-ctrl {
+        width: 100%; display: flex; align-items: center; justify-content: center; 
+        gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee;
+    }
     button {
         background: var(--primary); color: white; border: none;
         padding: 10px 16px; border-radius: 8px; cursor: pointer;
@@ -76,25 +81,25 @@
     <h1>🇷🇺 俄语背单词</h1>
     <select id="lessonSelect" onchange="initData()">
         <option value="all">📚 全部分数（复习汇总）</option>
-        <option value="L1/1" selected>第 1/1 课</option>
-        <option value="L1/2" selected>第 1/2 课</option>
-        <option value="L1/3" selected>第 1/3 课</option>
-        <option value="L2/2" selected>第 2/2 课</option>
-        <option value="L2/3" selected>第 2/3 课</option>
-        <option value="L3/1" selected>第 3/1 课</option>
-        <option value="L3/2" selected>第 3/2 课</option>
-        <option value="L4/1" selected>第 4/1 课</option>
-        <option value="L4/2" selected>第 4/2 课</option>
-        <option value="L5/1" selected>第 5/1 课</option>
-        <option value="L5/2" selected>第 5/2 课</option>
-        <option value="L6/1" selected>第 6/1 课</option>
-        <option value="L6/2" selected>第 6/2 课</option>
-        <option value="L7" selected>第 7 课</option>
-        <option value="L8/1" selected>第 8/1 课</option>
-        <option value="L8/2" selected>第 8/2 课</option>
-        <option value="L9" selected>第 9 课</option>
-        <option value="L10/1" selected>第 10/1 课</option>
-        <option value="L10/2">第 10/2 课</option>
+        <option value="L1/1">第 1/1 课</option>
+        <option value="L1/2">第 1/2 课</option>
+        <option value="L1/3">第 1/3 课</option>
+        <option value="L2/2">第 2/2 课</option>
+        <option value="L2/3">第 2/3 课</option>
+        <option value="L3/1">第 3/1 课</option>
+        <option value="L3/2">第 3/2 课</option>
+        <option value="L4/1">第 4/1 课</option>
+        <option value="L4/2">第 4/2 课</option>
+        <option value="L5/1">第 5/1 课</option>
+        <option value="L5/2">第 5/2 课</option>
+        <option value="L6/1">第 6/1 课</option>
+        <option value="L6/2">第 6/2 课</option>
+        <option value="L7">第 7 课</option>
+        <option value="L8/1">第 8/1 课</option>
+        <option value="L8/2">第 8/2 课</option>
+        <option value="L9">第 9 课</option>
+        <option value="L10/1">第 10/1 课</option>
+        <option value="L10/2" selected>第 10/2 课</option>
     </select>
 </div>
 
@@ -105,6 +110,12 @@
         <button class="secondary" onclick="toggleAll(true)">👁️ 显</button>
         <button class="secondary" onclick="toggleAll(false)">🙈 隐</button>
     </span>
+    <div class="speed-ctrl">
+        <span style="font-size:14px">🐢 慢</span>
+        <input type="range" id="speedRange" min="0.3" max="1.5" step="0.1" value="0.8" oninput="document.getElementById('speedVal').innerText=this.value">
+        <span style="font-size:14px">快 🚀</span>
+        <span id="speedVal" style="margin-left:5px; font-weight:bold; color:var(--primary)">0.8</span>
+    </div>
 </div>
 
 <div id="wordList"></div>
@@ -117,7 +128,7 @@
 </div>
 
 <script>
-// 1. 数据配置区：在这里添加你的新课程
+// 数据配置保持不变...
 const allLessons = {
     "L1/1": [
         {ru: "коридор", cn: "走廊"}, {ru: "вещь", cn: "东西；物品"}, {ru: "дежурный", cn: "值日生；值班人员"},
@@ -144,7 +155,7 @@ const allLessons = {
         {ru: "гулять", cn: "散步"}
     ],
     "L1/3": [
-        {ru: "разный", cn: "不同的"}, {ru: "центр", cn: "中心"}, {ru: "центральный", cn: "中央的"},
+        {ru: "разный", cn: "不同的"}, {ru: "центр", cn: "中心"}, {ru: "centralnyj", cn: "中央的"},
         {ru: "московский", cn: "莫斯科的"}, {ru: "самый", cn: "最...的"}, {ru: "гостиница", cn: "酒店"},
         {ru: "кинотеатр", cn: "电影院"}, {ru: "высокий", cn: "高的"}, {ru: "низкий", cn: "低的"},
         {ru: "район", cn: "区"}, {ru: "зелёный", cn: "绿色的"}, {ru: "бульвар", cn: "林荫大道"},
@@ -300,9 +311,9 @@ const allLessons = {
     "L8/1": [
         {ru: "важный", cn: "重要的"}, {ru: "готовиться", cn: "准备（未完成体）"}, {ru: "подготовиться", cn: "准备（完成体）"},
         {ru: "цель", cn: "目标 / 目的"}, {ru: "терять", cn: "失去（未完成体）"}, {ru: "нужный", cn: "需要的 / 必要的"},
-        {ru: "потеря表", cn: "失去（完成体）"}, {ru: "роль", cn: "角色 / 作用"}, {ru: "трудиться", cn: "努力工作（未完成体）"},
+        {ru: "потерять", cn: "失去（完成体）"}, {ru: "роль", cn: "角色 / 作用"}, {ru: "трудиться", cn: "努力工作（未完成体）"},
         {ru: "работать", cn: "工作 / 干活"}, {ru: "хвалить", cn: "夸奖 / 表扬（未完成体）"}, {ru: "труд", cn: "劳动 / 努力"},
-        {ru: "похвалить", cn: "夸奖 / 表扬（完成体）"}, {ru: "впечатление", cn: "印象"}, {ru: "стен画报", cn: "版报 / 墙报"},
+        {ru: "похвалить", cn: "夸奖 / 表扬（完成体）"}, {ru: "впечатление", cn: "印象"}, {ru: "стенгазета", cn: "版报 / 墙报"},
         {ru: "ошибка", cn: "错误"}, {ru: "земля", cn: "地球 / 土地"}, {ru: "быть (чем?)", cn: "是…（职业/身份/状态）"},
         {ru: "изменять", cn: "改变 / 出轨（未完成体）"}, {ru: "анализировать", cn: "分析（未完成体）"}, {ru: "изменить", cn: "改变 / 修改（完成体）"},
         {ru: "победа", cn: "胜利"}, {ru: "мир", cn: "世界 / 和平"}, {ru: "природа", cn: "自然"},
@@ -362,7 +373,7 @@ const allLessons = {
 let currentWords = [];
 let isTestMode = false;
 
-// 2. 初始化数据
+// 初始化数据
 function initData() {
     const val = document.getElementById('lessonSelect').value;
     if (val === 'all') {
@@ -373,7 +384,7 @@ function initData() {
     render();
 }
 
-// 3. 渲染页面
+// 渲染页面
 function render() {
     const list = document.getElementById('wordList');
     list.innerHTML = '';
@@ -400,7 +411,7 @@ function render() {
     });
 }
 
-// 4. 宽容纠错逻辑
+// 提交阅卷
 function submitTest() {
     let wrongHTML = '';
     currentWords.forEach((item, i) => {
@@ -409,7 +420,6 @@ function submitTest() {
         const resDiv = document.getElementById(`df-${i}`);
         resDiv.style.display = 'block';
 
-        // 宽容化处理：转小写，且去掉非字母符号进行对比
         const cleanIn = input.toLowerCase().replace(/[^а-яё]/g, '');
         const cleanTar = target.toLowerCase().replace(/[^а-яё]/g, '');
 
@@ -430,7 +440,7 @@ function submitTest() {
     }
 }
 
-// 5. 差异比对算法（可视化纠错）
+// 差异比对
 function generateDiff(user, target) {
     let res = "";
     const uArr = user.split('');
@@ -446,7 +456,7 @@ function generateDiff(user, target) {
     return res;
 }
 
-// 其他基础功能
+// 切换模式
 function toggleMode() {
     isTestMode = !isTestMode;
     document.getElementById('modeBtn').innerText = isTestMode ? "📖 返回浏览模式" : "✍️ 进入默写模式";
@@ -456,19 +466,30 @@ function toggleMode() {
     render();
 }
 
+// 随机乱序
 function shuffleWords() {
     currentWords.sort(() => Math.random() - 0.5);
     render();
 }
 
+// 显隐控制
 function toggleAll(show) {
     document.querySelectorAll('.cn').forEach(el => el.style.display = show?'block':'none');
 }
 
+// 更新后的朗读功能，支持语速控制
 function speak(text) {
+    // 停止当前所有播放，防止重叠
+    window.speechSynthesis.cancel();
+    
     const cleanText = text.replace(/[^а-яА-ЯёЁ\s]/g, '');
     const msg = new SpeechSynthesisUtterance(cleanText);
     msg.lang = 'ru-RU';
+    
+    // 获取滑动条设定的语速
+    const speed = document.getElementById('speedRange').value;
+    msg.rate = parseFloat(speed);
+    
     window.speechSynthesis.speak(msg);
 }
 
